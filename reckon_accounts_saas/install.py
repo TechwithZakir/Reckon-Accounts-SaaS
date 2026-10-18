@@ -2,20 +2,23 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import frappe
 
 from reckon_accounts_saas.constants import (
-    HOME_PAGE,
     MASTER_COMPANY_FIELD,
     MASTER_INSERT_AFTER,
     OWNED_MASTERS,
     SAAS_ROLES,
     SHARED_OR_OWNED_MASTERS,
-    TEAM_PAGE,
     WORKSPACE_SIDEBAR,
 )
 
 MODULE = "Accounts SaaS"
+# Frappe looks for the file at <app>/workspace_sidebar/<frappe.scrub(name)>.json.
+SIDEBAR_FILE = Path(__file__).parent / "workspace_sidebar" / "accounts_saas.json"
 
 
 def after_install() -> None:
@@ -88,7 +91,7 @@ def backfill_contact_owners() -> None:
 
 
 def ensure_workspace_sidebar() -> None:
-    """Frappe v16 left rail for the Accounts SaaS pages (rebuilt every migrate)."""
+    """Frappe v16 left rail for the Accounts SaaS pages, kept in step with the shipped file."""
     if not frappe.db.exists("DocType", "Workspace Sidebar"):
         return
     definition = workspace_sidebar_doc()
@@ -102,70 +105,17 @@ def ensure_workspace_sidebar() -> None:
 
 
 def workspace_sidebar_doc() -> dict:
-    def section(label, icon):
-        return {"type": "Section Break", "label": label, "icon": icon, "child": 0, "indent": 0,
-                "collapsible": 1, "keep_closed": 0, "show_arrow": 0}
+    """The rail shipped in ``workspace_sidebar/accounts_saas.json``, minus links this site lacks.
 
-    def link(label, link_to, link_type, icon, child=True):
-        return {"type": "Link", "label": label, "link_to": link_to, "link_type": link_type, "icon": icon,
-                "child": int(child), "indent": 0, "collapsible": 1, "show_arrow": 0}
-
-    items = [
-        link("Home", HOME_PAGE, "Page", "house", child=False),
-        section("Sales", "shopping-cart"),
-        link("Sales Invoices", "Sales Invoice", "DocType", "receipt-text"),
-        link("Quotations", "Quotation", "DocType", "file-text"),
-        link("Sales Orders", "Sales Order", "DocType", "clipboard-list"),
-        link("Delivery Notes", "Delivery Note", "DocType", "truck"),
-        link("Customers", "Customer", "DocType", "users"),
-        section("Purchase", "package-plus"),
-        link("Purchase Bills", "Purchase Invoice", "DocType", "file-text"),
-        link("Purchase Orders", "Purchase Order", "DocType", "clipboard-list"),
-        link("Goods Received", "Purchase Receipt", "DocType", "package-check"),
-        link("Suppliers", "Supplier", "DocType", "contact-round"),
-        section("Money", "wallet-cards"),
-        link("Payments", "Payment Entry", "DocType", "landmark"),
-        link("Voucher Entry", "voucher-entry", "Page", "keyboard"),
-        link("Journal Entries", "Journal Entry", "DocType", "book-open"),
-        link("Chart of Accounts", "Account", "DocType", "list-tree"),
-        section("Stock", "boxes"),
-        link("Items", "Item", "DocType", "package"),
-        link("Stock Entries", "Stock Entry", "DocType", "arrow-left-right"),
-        link("Stock Count", "Stock Reconciliation", "DocType", "clipboard-check"),
-        link("Warehouses", "Warehouse", "DocType", "warehouse"),
-        link("Stock Balance", "Stock Balance", "Report", "chart-column"),
-        section("Reports", "chart-no-axes-combined"),
-        link("Accounts Dashboard", "accounts-dashboard", "Page", "layout-dashboard"),
-        link("Day Book", "Day Book", "Report", "book-open-check"),
-        link("Cash Book", "Cash Book", "Report", "wallet-cards"),
-        link("Party Ledger", "Party Ledger", "Report", "contact-round"),
-        link("Accounts Receivable", "Accounts Receivable", "Report", "arrow-down-to-line"),
-        link("Accounts Payable", "Accounts Payable", "Report", "arrow-up-from-line"),
-        link("Sales Register", "Sales Register", "Report", "receipt-text"),
-        link("Purchase Register", "Purchase Register", "Report", "clipboard-list"),
-        link("Gross Profit", "Gross Profit", "Report", "trending-up"),
-        link("Profit and Loss", "Profit and Loss Statement", "Report", "chart-no-axes-combined"),
-        link("Balance Sheet", "Balance Sheet", "Report", "scale"),
-        link("Trial Balance", "Trial Balance", "Report", "list-checks"),
-        section("Setup", "settings"),
-        link("Team & Access", TEAM_PAGE, "Page", "users-round"),
-        link("Price Lists", "Price List", "DocType", "tags"),
-        link("Sales Tax Templates", "Sales Taxes and Charges Template", "DocType", "percent"),
-        link("Purchase Tax Templates", "Purchase Taxes and Charges Template", "DocType", "percent"),
-        link("Company", "Company", "DocType", "building-2"),
-    ]
-    items = [
+    The file is the single source of truth. Frappe v16 imports it on migrate, and its orphan
+    sweep deletes a standard Workspace Sidebar whose app has no
+    ``<app>/workspace_sidebar/<scrubbed name>.json``, so the rail must not live only in code.
+    """
+    definition = json.loads(SIDEBAR_FILE.read_text(encoding="utf-8"))
+    definition.pop("modified", None)
+    definition["items"] = [
         item
-        for item in items
+        for item in definition["items"]
         if item["type"] != "Link" or frappe.db.exists(item["link_type"], item["link_to"])
     ]
-    return {
-        "doctype": "Workspace Sidebar",
-        "name": WORKSPACE_SIDEBAR,
-        "title": WORKSPACE_SIDEBAR,
-        "app": "reckon_accounts_saas",
-        "module": MODULE,
-        "header_icon": "accounting",
-        "standard": 1,
-        "items": items,
-    }
+    return definition
