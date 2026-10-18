@@ -6,7 +6,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock
 
-from frappe_stub import _Dict, app_modules
+from frappe_stub import REPO_ROOT, _Dict, app_modules
 
 
 class RoleSyncTests(unittest.TestCase):
@@ -155,6 +155,27 @@ class SeedTests(unittest.TestCase):
         self.assertEqual({v["doctype"] for v in created}, {"Price List", "Customer", "Supplier"})
         self.assertTrue(all(v["rd_company"] == "Acme" for v in created))
         self.assertEqual(len(result["created"]), 4)
+
+    def test_fresh_company_gets_office_expense_settings(self):
+        with app_modules("seed") as (ctx, (seed,)):
+            ctx.frappe.db.get_value.side_effect = lambda doctype, filters=None, *a, **k: {
+                "Company": "ACM", "Warehouse": "Stores - ACM", "Price List": "Acme Selling",
+                "Customer": "Walk-in Customer - ACM", "Supplier": "Cash Purchase - ACM",
+            }.get(doctype)
+            ctx.frappe.get_all.side_effect = lambda doctype, **kw: [_Dict(name="2026")] if doctype == "Fiscal Year" else []
+            ctx.frappe.get_meta.return_value = SimpleNamespace(has_field=lambda f: False)
+            defaults = ctx.office_expense_setup.ensure_office_expense_defaults
+            defaults.return_value = ["Account: Office Rent - ACM", "Office Expense Settings"]
+            result = seed.run_accounts_seed("Acme", "2026.10.18")
+        defaults.assert_called_once_with("Acme")
+        self.assertEqual(result["created"], ["Account: Office Rent - ACM", "Office Expense Settings"])
+
+    def test_office_expense_seed_comes_from_reckon_accounts(self):
+        source = (REPO_ROOT / "reckon_accounts_saas" / "seed.py").read_text(encoding="utf-8")
+        self.assertIn("from reckon_accounts.office_expense_setup import ensure_office_expense_defaults", source)
+        hooks = (REPO_ROOT / "reckon_accounts_saas" / "hooks.py").read_text(encoding="utf-8")
+        required = next(line for line in hooks.splitlines() if line.startswith("required_apps"))
+        self.assertIn('"reckon_accounts"', required)
 
 
 class HomeTests(unittest.TestCase):

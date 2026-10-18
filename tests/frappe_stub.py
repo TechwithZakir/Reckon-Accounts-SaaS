@@ -135,7 +135,14 @@ def build_platform(frappe):
     gate = ModuleType("reckon_saas_platform.saas_gate")
     gate.is_user_gated = Mock(return_value=False)
 
+    accounts = ModuleType("reckon_accounts")
+    accounts.__path__ = []
+    office_expense_setup = ModuleType("reckon_accounts.office_expense_setup")
+    office_expense_setup.ensure_office_expense_defaults = Mock(return_value=[])
+
     return {
+        "reckon_accounts": accounts,
+        "reckon_accounts.office_expense_setup": office_expense_setup,
         "reckon_saas_platform": package,
         "reckon_saas_platform.tenant_security": security,
         "reckon_saas_platform.saas": saas,

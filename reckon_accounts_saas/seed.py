@@ -3,12 +3,15 @@
 Called by the platform's tenant seed job as ``run_accounts_seed(company, seed_version)``
 inside a savepoint. Every step is get-or-create, so a retry after a failure is safe.
 Only generic placeholders are created: no customers' data, prices or balances.
+Office Expense Settings (categories, cash payment method, cost center) come from
+Reckon Accounts so the Office Expense form works on day one.
 """
 
 from __future__ import annotations
 
 import frappe
 from frappe.utils import getdate, nowdate
+from reckon_accounts.office_expense_setup import ensure_office_expense_defaults
 
 from reckon_accounts_saas.constants import MASTER_COMPANY_FIELD
 
@@ -24,6 +27,7 @@ def run_accounts_seed(company: str, seed_version: str) -> dict:
     customer = ensure_walk_in_customer(company, abbr, selling, created)
     supplier = ensure_cash_supplier(company, abbr, created)
     set_company_defaults(company, warehouse)
+    created.extend(ensure_office_expense_defaults(company))
     return {
         "company": company,
         "seed_version": seed_version,
