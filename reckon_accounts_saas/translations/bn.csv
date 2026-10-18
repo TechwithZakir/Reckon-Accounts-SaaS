@@ -1,0 +1,76 @@
+Home,হোম
+New Sales Invoice,নতুন বিক্রয় চালান
+Refresh,রিফ্রেশ
+Sales Invoice,বিক্রয় চালান
+Bill a customer,ক্রেতাকে বিল করুন
+Purchase Bill,ক্রয় বিল
+Record a supplier bill,সরবরাহকারীর বিল লিখুন
+Receive Payment,টাকা গ্রহণ
+Money from a customer,ক্রেতার কাছ থেকে টাকা
+Make Payment,টাকা পরিশোধ
+Pay a supplier,সরবরাহকারীকে পরিশোধ
+Expense / Income,খরচ / আয়
+Quick voucher entry,দ্রুত ভাউচার এন্ট্রি
+Quotation,কোটেশন
+Send a price offer,মূল্য প্রস্তাব পাঠান
+New Item,নতুন পণ্য
+Product or service,পণ্য বা সেবা
+Stock Transfer,স্টক স্থানান্তর
+Move or adjust stock,স্টক সরান বা সমন্বয় করুন
+Sales today,আজকের বিক্রয়
+Sales this month,এই মাসের বিক্রয়
+Purchases this month,এই মাসের ক্রয়
+Customers owe you,ক্রেতাদের কাছে পাওনা
+You owe suppliers,সরবরাহকারীদের দেনা
+Cash and bank,নগদ ও ব্যাংক
+Stock value,স্টকের মূল্য
+Get started,শুরু করুন
+{0} of {1} done,{1}টির মধ্যে {0}টি সম্পন্ন
+Recent sales,সাম্প্রতিক বিক্রয়
+Recent purchases,সাম্প্রতিক ক্রয়
+Items to reorder,পুনরায় অর্ডার করার পণ্য
+Reports,রিপোর্ট
+View all,সব দেখুন
+No sales yet. Create your first invoice.,এখনো কোনো বিক্রয় নেই। প্রথম চালান তৈরি করুন।
+No purchase bills yet.,এখনো কোনো ক্রয় বিল নেই।
+Stock levels look fine.,স্টকের পরিমাণ ঠিক আছে।
+Who owes you,কার কাছে পাওনা
+Who you owe,কার কাছে দেনা
+Add your products or services,আপনার পণ্য বা সেবা যোগ করুন
+Add your customers,আপনার ক্রেতা যোগ করুন
+Add your suppliers,আপনার সরবরাহকারী যোগ করুন
+Enter opening stock,প্রারম্ভিক স্টক লিখুন
+Create your first sales invoice,প্রথম বিক্রয় চালান তৈরি করুন
+Invite your team,আপনার টিমকে আমন্ত্রণ জানান
+Team & Access,টিম ও অ্যাক্সেস
+Add Team Member,টিম সদস্য যোগ করুন
+Full Name,পূর্ণ নাম
+Role,ভূমিকা
+They receive an email with a link to set their password.,পাসওয়ার্ড সেট করার লিংকসহ তারা একটি ইমেইল পাবেন।
+Team member added,টিম সদস্য যোগ হয়েছে
+Role updated,ভূমিকা হালনাগাদ হয়েছে
+Access restored,অ্যাক্সেস ফিরিয়ে দেওয়া হয়েছে
+Access removed,অ্যাক্সেস বন্ধ করা হয়েছে
+Deactivate,নিষ্ক্রিয় করুন
+Reactivate,আবার সক্রিয় করুন
+You,আপনি
+Person,ব্যক্তি
+What each role can do,প্রতিটি ভূমিকা কী করতে পারে
+"People you add can sign in and work only in {0}.",আপনার যোগ করা ব্যক্তিরা শুধু {0}-এ সাইন ইন করে কাজ করতে পারবেন।
+"Everything, including team and settings",টিম ও সেটিংসসহ সবকিছু
+Everything except team access,টিম অ্যাক্সেস ছাড়া সবকিছু
+"Accounting, payments and reports","হিসাব, পেমেন্ট ও রিপোর্ট"
+"Quotations, sales invoices and customer payments","কোটেশন, বিক্রয় চালান ও ক্রেতার পেমেন্ট"
+"Purchase orders, bills and supplier payments","ক্রয় আদেশ, বিল ও সরবরাহকারীর পেমেন্ট"
+"Items, warehouses and stock movements","পণ্য, গুদাম ও স্টক চলাচল"
+Company Admin,কোম্পানি অ্যাডমিন
+Company Manager,কোম্পানি ম্যানেজার
+Accountant,হিসাবরক্ষক
+Sales User,বিক্রয় কর্মী
+Purchase User,ক্রয় কর্মী
+Stock User,স্টক কর্মী
+Show all fields,সব ঘর দেখান
+Show fewer fields,কম ঘর দেখান
+This document belongs to another company.,এই ডকুমেন্টটি অন্য কোম্পানির।
+This record belongs to another company.,এই রেকর্ডটি অন্য কোম্পানির।
+{0} {1} is not available in your company.,{0} {1} আপনার কোম্পানিতে নেই।

@@ -1,0 +1,12 @@
+{
+ "doctype": "Page",
+ "icon": "users-round",
+ "module": "Accounts SaaS",
+ "name": "accounts-team",
+ "page_name": "accounts-team",
+ "roles": [
+  {"role": "Reckon Accounts SaaS Admin"}
+ ],
+ "standard": "Yes",
+ "title": "Team & Access"
+}

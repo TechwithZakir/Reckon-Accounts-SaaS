@@ -1,0 +1,19 @@
+{
+ "doctype": "Page",
+ "icon": "house",
+ "module": "Accounts SaaS",
+ "name": "accounts-home",
+ "page_name": "accounts-home",
+ "roles": [
+  {"role": "Reckon Accounts SaaS Admin"},
+  {"role": "Reckon Accounts SaaS Manager"},
+  {"role": "Reckon Accounts SaaS Accountant"},
+  {"role": "Reckon Accounts SaaS Sales User"},
+  {"role": "Reckon Accounts SaaS Purchase User"},
+  {"role": "Reckon Accounts SaaS Stock User"},
+  {"role": "Reckon Vendor Superuser"},
+  {"role": "System Manager"}
+ ],
+ "standard": "Yes",
+ "title": "Home"
+}
