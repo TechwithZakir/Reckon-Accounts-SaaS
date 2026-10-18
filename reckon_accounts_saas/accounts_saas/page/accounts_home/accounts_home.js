@@ -16,6 +16,7 @@ frappe.pages["accounts-home"].on_page_load = function (wrapper) {
         { label: __("Make Payment"), hint: __("Pay a supplier"), icon: "arrow-up-from-line",
           run: () => frappe.new_doc("Payment Entry", { payment_type: "Pay", party_type: "Supplier" }) },
         { label: __("Expense / Income"), hint: __("Quick voucher entry"), icon: "keyboard", run: () => frappe.set_route("voucher-entry") },
+        { label: __("Office Expense"), hint: __("Record a paid office expense"), icon: "wallet", run: () => frappe.new_doc("Office Expense") },
         { label: __("Quotation"), hint: __("Send a price offer"), icon: "file-pen", run: () => frappe.new_doc("Quotation") },
         { label: __("New Item"), hint: __("Product or service"), icon: "package", run: () => frappe.new_doc("Item") },
         { label: __("Stock Transfer"), hint: __("Move or adjust stock"), icon: "arrow-left-right", run: () => frappe.new_doc("Stock Entry") },

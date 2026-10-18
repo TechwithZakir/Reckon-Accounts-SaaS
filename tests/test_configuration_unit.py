@@ -118,6 +118,47 @@ class NavigationTests(unittest.TestCase):
                 self.assertIn(report, c.ALLOWED_REPORTS)
 
 
+class OfficeExpenseTests(unittest.TestCase):
+    """Reckon Accounts' Office Expense is tenant-scoped and one click away."""
+
+    def test_office_expense_documents_are_tenant_isolated(self):
+        with app_modules("hooks", "constants") as (_ctx, (hooks, c)):
+            for doctype in ("Office Expense", "Office Expense Settings"):
+                with self.subTest(doctype=doctype):
+                    self.assertIn(doctype, c.COMPANY_DOCTYPES)
+                    self.assertEqual(
+                        hooks.doc_events[doctype]["before_validate"],
+                        "reckon_accounts_saas.tenant.bind_company_document",
+                    )
+                    self.assertIn(doctype, hooks.permission_query_conditions)
+                    self.assertIn(doctype, hooks.has_permission)
+            for child in ("Office Expense Item", "Office Expense Category Setup", "Office Expense Payment Setup"):
+                self.assertIn(child, c.CHILD_DOCTYPES)
+                self.assertIn(child, c.LOOKUP_ONLY_DOCTYPES)
+
+    def test_left_menu_links_the_form_and_its_setup(self):
+        with app_modules("install") as (ctx, (install,)):
+            ctx.frappe.db.exists.return_value = True
+            items = install.workspace_sidebar_doc()["items"]
+        links = [(item["label"], item["link_to"]) for item in items if item["type"] == "Link"]
+        self.assertIn(("Office Expenses", "Office Expense"), links)
+        self.assertIn(("Office Expense Setup", "Office Expense Settings"), links)
+        sections = [item["label"] for item in items if item["type"] != "Link"]
+        money = links.index(("Payments", "Payment Entry"))
+        self.assertLess(money, links.index(("Office Expenses", "Office Expense")))
+        self.assertIn("Money", sections)
+
+    def test_left_menu_hides_links_when_reckon_accounts_lacks_the_doctype(self):
+        with app_modules("install") as (ctx, (install,)):
+            ctx.frappe.db.exists.side_effect = lambda doctype, name=None: not str(name).startswith("Office Expense")
+            items = install.workspace_sidebar_doc()["items"]
+        self.assertFalse([item for item in items if str(item.get("link_to", "")).startswith("Office Expense")])
+
+    def test_home_page_has_an_office_expense_action(self):
+        js = (APP / "accounts_saas/page/accounts_home/accounts_home.js").read_text(encoding="utf-8")
+        self.assertIn('frappe.new_doc("Office Expense")', js)
+
+
 class LeanFormTests(unittest.TestCase):
     def test_lean_forms_cover_reachable_doctypes_only(self):
         with app_modules("form_config", "constants") as (_ctx, (forms, c)):

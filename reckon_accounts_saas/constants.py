@@ -88,6 +88,9 @@ COMPANY_DOCTYPES = (
     "Sales Taxes and Charges Template",
     "Purchase Taxes and Charges Template",
     "Item Tax Template",
+    # Reckon Accounts' compact expense form and its per-company setup.
+    "Office Expense",
+    "Office Expense Settings",
 )
 
 # ERPNext masters without a company field get the shared ``rd_company`` owner
@@ -162,6 +165,9 @@ CHILD_DOCTYPES = (
     "Item Barcode",
     "Item Tax Template Detail",
     "Dynamic Link",
+    "Office Expense Item",
+    "Office Expense Category Setup",
+    "Office Expense Payment Setup",
 )
 
 ALLOWED_DOCTYPES = frozenset(
