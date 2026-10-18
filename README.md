@@ -30,12 +30,19 @@ dashboard and 25 Tally-style reports. This app adds what a SaaS tenant needs:
 ## Install
 
 ```bash
-bench get-app https://github.com/TechwithZakir/Reckon-SaaS-Platform
-bench get-app https://github.com/TechwithZakir/Reckon-Accounts
-bench get-app https://github.com/TechwithZakir/Reckon-Accounts-SaaS
-bench --site <site> install-app reckon_saas_platform reckon_accounts reckon_accounts_saas
+bench get-app https://github.com/TechwithZakir/Reckon-SaaS-Platform   # skip if already installed
+R="python apps/reckon_saas_platform/scripts/reckon_bench.py"
+$R get-app https://github.com/TechwithZakir/Reckon-Accounts
+$R get-app https://github.com/TechwithZakir/Reckon-Accounts-SaaS
+bench --site <site> install-app reckon_accounts reckon_accounts_saas
 bench --site <site> migrate
 ```
+
+`reckon_bench.py get-app` updates an app that is already installed instead of
+re-cloning it, and repairs `sites/apps.txt` if a failed clone leaves a repo name
+such as `Reckon-Accounts` in it. Update later with
+`$R update reckon_accounts reckon_accounts_saas`. See the
+[platform README](https://github.com/TechwithZakir/Reckon-SaaS-Platform#installing-and-updating-apps-safely).
 
 After installing:
 
