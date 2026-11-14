@@ -21,6 +21,16 @@ def company_uses_accounts(company: str | None) -> bool:
     return MODULE_KEY in get_company_module_keys(company)
 
 
+def _profile_for(user: str, row) -> str | None:
+    """The person's role profile in this module, or ``None`` when the company's team page did not give them it."""
+    try:
+        from reckon_saas_platform.team import module_profile
+    except ImportError:  # an older platform: one role profile for every module
+        return row.role_profile
+    access = module_profile(user, row.company, MODULE_KEY, row.role_profile)
+    return access["role_profile"] if access else None
+
+
 def sync_tenant_user_access(doc, method=None) -> None:
     """Tenant User Assignment ``on_update``."""
     if not company_uses_accounts(doc.get("company")):
@@ -41,7 +51,7 @@ def sync_user(user: str | None) -> None:
     wanted = {
         role
         for row in accounts_rows
-        for role in PROFILE_ROLES.get(row.role_profile or "", ())
+        for role in PROFILE_ROLES.get(_profile_for(user, row) or "", ())
         if frappe.db.exists("Role", role)
     }
     current = set(frappe.get_roles(user))
