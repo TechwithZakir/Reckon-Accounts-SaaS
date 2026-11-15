@@ -171,7 +171,7 @@ class EveryAllowedDoctypeIsScopedTests(unittest.TestCase):
         from reckon_accounts_saas import constants as c
 
         read_only_reference = {"Company", "UOM Conversion Factor", "Currency", "Country", "Print Format", "Letter Head",
-                               "Language", "DocType", "Report", "List Filter", "User", "Bin"}
+                               "Language", "DocType", "Report", "List Filter", "User", "Bin", *c.READ_ONLY_GLOBALS}
         scoped = set(c.COMPANY_DOCTYPES) | set(c.OWNED_MASTERS) | set(c.SHARED_OR_OWNED_MASTERS) | set(c.CHILD_DOCTYPES)
         loose = set(c.ALLOWED_DOCTYPES) - scoped - read_only_reference
         self.assertEqual(loose, set(), "these doctypes are open to tenants without a company scope")

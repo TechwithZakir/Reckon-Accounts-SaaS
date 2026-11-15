@@ -121,6 +121,9 @@ MASTER_INSERT_AFTER = {
 }
 
 # Read-only or harmless global records forms need.
+# Global records the vendor owns: tenants read them (forms need them), only vendor staff change them.
+READ_ONLY_GLOBALS = ("Party Type", "Accounts Settings", "Stock Settings")
+
 GLOBAL_DOCTYPES = (
     "Company",
     "UOM Conversion Factor",
@@ -134,6 +137,9 @@ GLOBAL_DOCTYPES = (
     "List Filter",
     "User",
     "Bin",
+    "Party Type",
+    "Accounts Settings",
+    "Stock Settings",
 )
 
 CHILD_DOCTYPES = (
@@ -173,7 +179,7 @@ ALLOWED_DOCTYPES = frozenset(
 )
 # Reachable through the API (forms, link fields, metadata) but not as Desk pages.
 LOOKUP_ONLY_DOCTYPES = frozenset(
-    {"DocType", "Report", "List Filter", "Language", "User", "Bin", "Letter Head", "Print Format", "Currency", "Country"}
+    {"DocType", "Report", "List Filter", "Language", "User", "Bin", "Letter Head", "Print Format", "Currency", "Country", "Party Type", "Accounts Settings", "Stock Settings"}
     | set(CHILD_DOCTYPES)
 )
 

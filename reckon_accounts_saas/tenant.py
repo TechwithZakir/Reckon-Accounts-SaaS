@@ -135,6 +135,13 @@ def has_owned_master_permission(doc, user=None, ptype=None, permission_type=None
     return stored == company and value in (None, "", company)
 
 
+def has_read_only_global_permission(doc, user=None, ptype=None, permission_type=None, debug=False) -> bool:
+    """Party Type and the settings records: every tenant reads them, only vendor staff change them."""
+    if _company_or_none(user) is None:
+        return True
+    return (ptype or permission_type) not in WRITE_PERMISSIONS
+
+
 def has_bin_permission(doc, user=None, ptype=None, permission_type=None, debug=False) -> bool:
     company = _company_or_none(user)
     if company is None:

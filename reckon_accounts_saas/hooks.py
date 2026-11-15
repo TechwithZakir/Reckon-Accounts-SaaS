@@ -57,6 +57,7 @@ permission_query_conditions = {
 has_permission = {
     **{doctype: f"{_TENANT}.has_company_document_permission" for doctype in _c.COMPANY_DOCTYPES},
     **{doctype: f"{_TENANT}.has_owned_master_permission" for doctype in _c.OWNED_MASTERS + _c.SHARED_OR_OWNED_MASTERS},
+    **{doctype: f"{_TENANT}.has_read_only_global_permission" for doctype in _c.READ_ONLY_GLOBALS},
     "Company": f"{_TENANT}.has_company_permission",
     "Bin": f"{_TENANT}.has_bin_permission",
     "User": f"{_TENANT}.has_user_permission",
