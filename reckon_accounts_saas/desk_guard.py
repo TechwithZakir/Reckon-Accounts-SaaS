@@ -91,11 +91,12 @@ def restrict_accounts_desk_request() -> None:
         return
     if not path.startswith(DESK_PREFIXES):
         return
-    route = path.split("/", 3)[2] if path.count("/") >= 2 else ""
-    if path.rstrip("/") in DESK_PREFIXES or not route:
+    parts = [unquote(p) for p in path.split("/")[2:] if p]
+    if path.rstrip("/") in DESK_PREFIXES or not parts:
         _redirect(HOME_ROUTE)
         return
-    route = unquote(route)
+    # /desk/<workspace>/<page or doctype>: the workspace only picks the sidebar, so the page is what is checked.
+    route = parts[1] if len(parts) > 1 and parts[0] not in scope.routes else parts[0]
     if route not in scope.routes:
         _redirect(HOME_ROUTE)
         return
@@ -210,6 +211,7 @@ def _allowed_for(modules: list[str]) -> tuple[set[str], set[str], set[str]]:
         if module.get("key") in modules and module.get("key") != MODULE_KEY:
             pages.update(module.get("desk_pages") or [])
             doctypes.update(module.get("desk_doctypes") or [])
+            pages.update(frappe.scrub(w).replace("_", "-") for w in module.get("desk_workspaces") or [])
             reports.update(module.get("desk_reports") or [])
     return pages, doctypes, reports
 
