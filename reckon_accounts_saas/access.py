@@ -105,6 +105,13 @@ def sync_company_permission(user: str, company: str | None) -> None:
                 "is_default": 1,
             }
         ).insert(ignore_permissions=True)
+    if company:
+        from reckon_accounts_saas.tenant import company_price_list
+
+        for key, selling in (("selling_price_list", True), ("buying_price_list", False)):
+            price_list = company_price_list(company, selling)
+            if price_list:
+                frappe.defaults.set_user_default(key, price_list, user=user)
     frappe.clear_cache(user=user)
 
 

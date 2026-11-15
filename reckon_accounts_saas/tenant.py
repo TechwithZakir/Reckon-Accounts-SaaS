@@ -219,6 +219,21 @@ def validate_company_document(doc, method=None) -> None:
             assert_owned_master(row.get("party_type"), row.get("party"), company)
 
 
+def company_price_list(company: str, selling: bool) -> str | None:
+    """The price list the company's own seed created (Price List is owned by the company, so the stock one is not usable)."""
+    return frappe.db.get_value(
+        "Price List", {MASTER_COMPANY_FIELD: company, "selling" if selling else "buying": 1, "enabled": 1}, "name", order_by="creation asc"
+    )
+
+
+def _default_price_list(doc, company: str) -> None:
+    """A new customer or supplier starts on the company's own price list, not the system one it cannot use."""
+    if doc.doctype in {"Customer", "Supplier"} and doc.meta.has_field("default_price_list") and not doc.get("default_price_list"):
+        price_list = company_price_list(company, selling=doc.doctype == "Customer")
+        if price_list:
+            doc.default_price_list = price_list
+
+
 def bind_owned_master(doc, method=None) -> None:
     """``before_validate`` on owned masters: stamp and protect the owner."""
     company = tenant_company()
@@ -229,6 +244,7 @@ def bind_owned_master(doc, method=None) -> None:
         if value and value != company:
             frappe.throw(_("This record belongs to another company."), frappe.PermissionError)
         doc.set(MASTER_COMPANY_FIELD, company)
+        _default_price_list(doc, company)
         return
     stored = frappe.db.get_value(doc.doctype, doc.name, MASTER_COMPANY_FIELD)
     if stored != company or (value and value != company):

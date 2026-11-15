@@ -177,3 +177,12 @@ class EveryAllowedDoctypeIsScopedTests(unittest.TestCase):
         scoped = set(c.COMPANY_DOCTYPES) | set(c.OWNED_MASTERS) | set(c.SHARED_OR_OWNED_MASTERS) | set(c.CHILD_DOCTYPES)
         loose = set(c.ALLOWED_DOCTYPES) - scoped - read_only_reference
         self.assertEqual(loose, set(), "these doctypes are open to tenants without a company scope")
+
+
+class PriceListDefaultTests(unittest.TestCase):
+    def test_a_new_customer_starts_on_the_companys_own_selling_list(self):
+        with app_modules("tenant") as (ctx, (tenant,)):
+            ctx.frappe.db.get_value.return_value = "Acme Selling"
+            doc = FakeDoc("Customer", "New", fields=("default_price_list",))
+            tenant._default_price_list(doc, "Acme")
+            self.assertEqual(doc.get("default_price_list"), "Acme Selling")
