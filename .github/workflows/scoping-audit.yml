@@ -1,0 +1,78 @@
+name: Tenant scoping audit
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  scoping:
+    # A real Frappe v16 site with this module installed: fails when the module opens a doctype to tenants
+    # without a company scope (or a declared read-only reference).
+    name: Tenant scoping audit on Frappe v16
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: root
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=2s --health-retries=30
+      redis-cache:
+        image: redis:7-alpine
+        ports: ["13000:6379"]
+      redis-queue:
+        image: redis:7-alpine
+        ports: ["11000:6379"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: app
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install bench
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client libmariadb-dev pkg-config
+          python -m pip install --upgrade pip frappe-bench
+      - name: Set up bench (Frappe version-16)
+        run: |
+          exec > >(tee -a ~/ci.log) 2>&1
+          bench init --skip-redis-config-generation --skip-assets --frappe-branch version-16 --python "$(which python)" ~/frappe-bench
+          cd ~/frappe-bench
+          bench set-config -g db_host 127.0.0.1
+          bench set-config -g redis_cache redis://127.0.0.1:13000
+          bench set-config -g redis_queue redis://127.0.0.1:11000
+          bench set-config -g redis_socketio redis://127.0.0.1:13000
+      - name: Get apps
+        run: |
+          cd ~/frappe-bench
+          exec > >(tee -a ~/ci.log) 2>&1
+          bench get-app --skip-assets --branch version-16 erpnext https://github.com/frappe/erpnext
+          bench get-app --skip-assets --branch main reckon_saas_platform https://github.com/TechwithZakir/Reckon-SaaS-Platform
+          bench get-app --skip-assets --branch main reckon_accounts https://github.com/TechwithZakir/Reckon-Accounts
+          bench get-app --skip-assets reckon_accounts_saas "$GITHUB_WORKSPACE/app"
+      - name: Create a site, install and migrate
+        run: |
+          cd ~/frappe-bench
+          run() { echo "+ $*"; "$@" 2>&1 | tee -a ~/ci.log; return ${PIPESTATUS[0]}; }
+          run bench new-site --db-root-password root --admin-password admin --mariadb-user-host-login-scope='%' ci.local
+          for app in erpnext reckon_saas_platform reckon_accounts reckon_accounts_saas; do run bench --site ci.local install-app "$app"; done
+          run bench --site ci.local migrate
+      - name: Tenant scoping audit
+        run: |
+          cd ~/frappe-bench
+          set -o pipefail
+          bench --site ci.local execute reckon_saas_platform.tenant_audit.assert_scoped --kwargs "{'module_key': 'accounts'}" 2>&1 | tee -a ~/ci.log
+      - name: Show why it failed
+        if: failure()
+        run: |
+          tail -n 60 ~/ci.log 2>/dev/null | sed -e 's/%/%25/g' | awk 'BEGIN{ORS="%0A"} {print}' > ~/tail.txt || true
+          echo "::error title=Last lines before the failure::$(cat ~/tail.txt)"
