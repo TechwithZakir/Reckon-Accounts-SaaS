@@ -8,6 +8,7 @@ from reckon_accounts_saas.constants import (
     HOME_PAGE,
     HOME_ROUTE,
     MODULE_KEY,
+    READ_ONLY_GLOBALS,
     SAAS_ROLES,
 )
 
@@ -34,5 +35,7 @@ def get_module_definition() -> dict:
         ],
         "desk_pages": sorted(ALLOWED_PAGES),
         "desk_doctypes": sorted(ALLOWED_DOCTYPES),
+        # Read-only for tenants (has_read_only_global_permission): vendor-wide lists and settings.
+        "desk_reference_doctypes": sorted(READ_ONLY_GLOBALS),
         "desk_reports": sorted(ALLOWED_REPORTS),
     }
