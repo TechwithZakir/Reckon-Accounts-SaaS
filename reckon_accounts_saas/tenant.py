@@ -239,6 +239,10 @@ def bind_owned_master(doc, method=None) -> None:
     company = tenant_company()
     if company is None or not doc.meta.has_field(MASTER_COMPANY_FIELD):
         return
+    # A login's own Contact is kept by Frappe (a background job refreshes it whoever saved the User), so it has no
+    # company owner to protect.
+    if doc.doctype == "Contact" and doc.get("user"):
+        return
     value = doc.get(MASTER_COMPANY_FIELD)
     if doc.is_new():
         if value and value != company:
