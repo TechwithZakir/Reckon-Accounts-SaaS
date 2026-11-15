@@ -99,7 +99,11 @@ MASTER_COMPANY_FIELD = "rd_company"
 OWNED_MASTERS = ("Customer", "Supplier", "Item", "Price List", "Item Price", "Address", "Contact")
 # Shared taxonomies: rows without an owner are visible to every tenant; rows a
 # tenant creates are its own.
-SHARED_OR_OWNED_MASTERS = ("Item Group", "Brand", "Customer Group", "Supplier Group", "Territory", "Sales Person")
+SHARED_OR_OWNED_MASTERS = (
+    "Item Group", "Brand", "Customer Group", "Supplier Group", "Territory", "Sales Person",
+    # Setup lists every tenant uses. The vendor's rows stay readable; a tenant changes only the rows it added.
+    "UOM", "Mode of Payment", "Fiscal Year", "Stock Entry Type", "Terms and Conditions", "Payment Terms Template", "Tax Category",
+)
 MASTER_INSERT_AFTER = {
     "Customer": "customer_name",
     "Supplier": "supplier_name",
@@ -119,22 +123,16 @@ MASTER_INSERT_AFTER = {
 # Read-only or harmless global records forms need.
 GLOBAL_DOCTYPES = (
     "Company",
-    "UOM",
     "UOM Conversion Factor",
     "Currency",
     "Country",
-    "Mode of Payment",
-    "Payment Terms Template",
-    "Fiscal Year",
     "Print Format",
     "Letter Head",
-    "Terms and Conditions",
     "Language",
     "DocType",
     "Report",
     "List Filter",
     "User",
-    "Stock Entry Type",
     "Bin",
 )
 

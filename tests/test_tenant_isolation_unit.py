@@ -162,3 +162,16 @@ class SaveTimeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EveryAllowedDoctypeIsScopedTests(unittest.TestCase):
+    """A doctype a tenant can open must be company-scoped, a shared catalog, a child table or read-only reference data."""
+
+    def test_no_writable_unscoped_doctype_is_allowed(self):
+        from reckon_accounts_saas import constants as c
+
+        read_only_reference = {"Company", "UOM Conversion Factor", "Currency", "Country", "Print Format", "Letter Head",
+                               "Language", "DocType", "Report", "List Filter", "User", "Bin"}
+        scoped = set(c.COMPANY_DOCTYPES) | set(c.OWNED_MASTERS) | set(c.SHARED_OR_OWNED_MASTERS) | set(c.CHILD_DOCTYPES)
+        loose = set(c.ALLOWED_DOCTYPES) - scoped - read_only_reference
+        self.assertEqual(loose, set(), "these doctypes are open to tenants without a company scope")
