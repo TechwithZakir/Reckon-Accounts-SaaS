@@ -115,7 +115,8 @@ def has_company_permission(doc, user=None, ptype=None, permission_type=None, deb
     if company is None:
         return True
     permission_type = ptype or permission_type
-    if permission_type in {"create", "delete"}:
+    # A tenant reads its own Company; creating or changing it is vendor work.
+    if permission_type in WRITE_PERMISSIONS:
         return False
     return doc.name == company
 

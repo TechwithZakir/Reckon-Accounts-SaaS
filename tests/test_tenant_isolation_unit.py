@@ -77,9 +77,11 @@ class DocumentPermissionTests(unittest.TestCase):
             ctx.frappe.db.get_value.return_value = "Acme"
             self.assertTrue(tenant.has_owned_master_permission(FakeDoc("Customer", "C-2", rd_company="Acme"), ptype="read"))
 
-    def test_company_record_cannot_be_created_or_deleted_by_tenant(self):
+    def test_company_record_is_read_only_for_its_own_tenant(self):
         with app_modules("tenant") as (_ctx, (tenant,)):
-            self.assertTrue(tenant.has_company_permission(FakeDoc("Company", "Acme"), ptype="write"))
+            self.assertTrue(tenant.has_company_permission(FakeDoc("Company", "Acme"), ptype="read"))
+            for right in ("create", "write", "submit", "cancel"):
+                self.assertFalse(tenant.has_company_permission(FakeDoc("Company", "Acme"), ptype=right))
             self.assertFalse(tenant.has_company_permission(FakeDoc("Company", "Acme"), ptype="delete"))
             self.assertFalse(tenant.has_company_permission(FakeDoc("Company", "Rival"), ptype="read"))
 
