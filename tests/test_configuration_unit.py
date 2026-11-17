@@ -55,7 +55,7 @@ class HooksTests(unittest.TestCase):
                 "app_logo_url", "app_icon_url", "app_icon_title", "app_icon_route", "required_apps",
                 "add_to_apps_screen", "after_install", "after_migrate", "reckon_saas_modules", "before_request",
                 "after_request", "get_website_user_home_page", "boot_session", "permission_query_conditions",
-                "has_permission", "doc_events", "doctype_js", "fixtures",
+                "has_permission", "doc_events", "doctype_js", "fixtures", "extend_bootinfo",
             }
             public = {name for name in vars(hooks) if not name.startswith("_") and name != "annotations"}
             self.assertEqual(public - known, set())
@@ -197,3 +197,13 @@ class LeanFormTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SidebarOrderTests(unittest.TestCase):
+    def test_accounts_dashboard_sits_right_after_home(self):
+        data = json.loads((APP / "workspace_sidebar" / "accounts_saas.json").read_text(encoding="utf-8"))
+        labels = [(item.get("link_to"), item.get("child")) for item in data["items"][:3]]
+        self.assertEqual(labels[0][0], "accounts-home")
+        self.assertEqual(labels[1], ("accounts-dashboard", 0))  # top level, not tucked under Reports
+        self.assertEqual(sum(1 for item in data["items"] if item.get("link_to") == "accounts-dashboard"), 1)
+        self.assertIn("move_accounts_dashboard_to_top", (APP / "patches.txt").read_text(encoding="utf-8"))

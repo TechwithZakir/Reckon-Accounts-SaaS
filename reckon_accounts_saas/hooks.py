@@ -82,7 +82,10 @@ doc_events = {
     "Tenant User Assignment": {
         "on_update": "reckon_accounts_saas.access.sync_tenant_user_access",
     },
+    "Company": {"validate": f"{_TENANT}.validate_company_edit"},
 }
+
+extend_bootinfo = f"{_TENANT}.extend_bootinfo"
 
 doctype_js = {doctype: "public/js/simple_form.js" for doctype in _forms.ESSENTIAL_FIELDS}
 

@@ -19,6 +19,17 @@
    "show_arrow": 0
   },
   {
+   "type": "Link",
+   "label": "Accounts Dashboard",
+   "link_to": "accounts-dashboard",
+   "link_type": "Page",
+   "icon": "layout-dashboard",
+   "child": 0,
+   "indent": 0,
+   "collapsible": 1,
+   "show_arrow": 0
+  },
+  {
    "type": "Section Break",
    "label": "Sales",
    "icon": "shopping-cart",
@@ -275,17 +286,6 @@
    "indent": 0,
    "collapsible": 1,
    "keep_closed": 0,
-   "show_arrow": 0
-  },
-  {
-   "type": "Link",
-   "label": "Accounts Dashboard",
-   "link_to": "accounts-dashboard",
-   "link_type": "Page",
-   "icon": "layout-dashboard",
-   "child": 1,
-   "indent": 0,
-   "collapsible": 1,
    "show_arrow": 0
   },
   {
