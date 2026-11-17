@@ -93,25 +93,6 @@ class DocumentPermissionTests(unittest.TestCase):
                 self.assertFalse(tenant.has_company_permission(FakeDoc("Company", "Acme"), ptype=right))
             self.assertFalse(tenant.has_company_permission(FakeDoc("Company", "Rival"), ptype="write"))  # never another company
 
-    def test_a_tenant_admin_can_change_contact_details_but_not_the_books_settings(self):
-        from types import SimpleNamespace
-
-        def company(**values):
-            fields = [SimpleNamespace(fieldname=n, fieldtype="Data", label=n) for n in ("email", "website", "default_currency", "abbr")]
-            before = dict(email="a@x.test", website="", default_currency="BDT", abbr="AC")
-            doc = SimpleNamespace(meta=SimpleNamespace(fields=fields), is_new=lambda: False, get_doc_before_save=lambda: SimpleNamespace(get=before.get))
-            data = {**before, **values}
-            doc.get = data.get
-            return doc
-
-        with app_modules("tenant") as (ctx, (tenant,)):
-            tenant.validate_company_edit(company(email="new@x.test", website="https://acme.test"))  # allowed
-            with self.assertRaises(Exception) as caught:
-                tenant.validate_company_edit(company(default_currency="USD"))
-            self.assertIn("default_currency", str(caught.exception))
-            ctx.tenant_security.user_can_bypass_tenant.return_value = True  # vendor staff are not limited here
-            tenant.validate_company_edit(company(default_currency="USD", abbr="ZZ"))
-
     def test_user_without_tenant_sees_nothing(self):
         with app_modules("tenant") as (ctx, (tenant,)):
             ctx.tenant_security.require_tenant.side_effect = ctx.tenant_security.TenantResolutionError("none")

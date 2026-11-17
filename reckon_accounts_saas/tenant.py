@@ -110,16 +110,6 @@ def has_company_document_permission(doc, user=None, ptype=None, permission_type=
     return stored == company and value in (None, "", company)
 
 
-# What a company admin may change on their own Company: contact and registration details. Everything that shapes
-# the books (currency, accounts, the chart of accounts, name and abbreviation) stays with Reckon support.
-EDITABLE_COMPANY_FIELDS = frozenset(
-    {
-        "email", "phone_no", "fax", "website", "company_description", "registration_details", "tax_id",
-        "date_of_incorporation", "date_of_commencement", "company_logo", "default_letter_head",
-    }
-)
-
-
 def is_company_admin(user: str | None, company: str) -> bool:
     return bool(
         user
@@ -127,21 +117,6 @@ def is_company_admin(user: str | None, company: str) -> bool:
             "Tenant User Assignment", {"user": user, "company": company, "active": 1, "role_profile": "Company Admin"}
         )
     )
-
-
-def company_editable(user: str | None = None) -> bool:
-    """Whether this person may edit their own company's details."""
-    user = user or frappe.session.user
-    company = _company_or_none(user)
-    return bool(company and company != "\0no-tenant" and is_company_admin(user, company))
-
-
-def extend_bootinfo(bootinfo) -> None:
-    """Tell the Company form whether to offer Save (the page script also fills in the read-only message)."""
-    try:
-        bootinfo["reckon_company_editable"] = company_editable()
-    except Exception:
-        bootinfo["reckon_company_editable"] = False
 
 
 def has_company_permission(doc, user=None, ptype=None, permission_type=None, debug=False) -> bool:
@@ -155,27 +130,6 @@ def has_company_permission(doc, user=None, ptype=None, permission_type=None, deb
         # The company admin may save changes to the details above; creating, deleting or submitting is vendor work.
         return permission_type == "write" and is_company_admin(user or frappe.session.user, company)
     return True
-
-
-def validate_company_edit(doc, method=None) -> None:
-    """``Company.validate``: a tenant admin changes only the editable details, whatever the form or API sends."""
-    if _company_or_none(None) is None or doc.is_new():
-        return
-    before = doc.get_doc_before_save()
-    if not before:
-        return
-    skip = {"Section Break", "Column Break", "Tab Break", "HTML", "Button", "Heading", "Table", "Table MultiSelect"}
-    changed = []
-    for field in doc.meta.fields:
-        if field.fieldtype in skip or field.fieldname in EDITABLE_COMPANY_FIELDS:
-            continue
-        if (before.get(field.fieldname) or None) != (doc.get(field.fieldname) or None):
-            changed.append(_(field.label or field.fieldname))
-    if changed:
-        frappe.throw(
-            _("Only Reckon support can change: {0}. You can update your contact and registration details.").format(", ".join(changed)),
-            frappe.PermissionError,
-        )
 
 
 def has_owned_master_permission(doc, user=None, ptype=None, permission_type=None, debug=False) -> bool:
