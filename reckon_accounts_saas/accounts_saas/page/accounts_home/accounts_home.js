@@ -11,11 +11,11 @@ frappe.pages["accounts-home"].on_page_load = function (wrapper) {
     const ACTIONS = [
         { label: __("Sales Invoice"), hint: __("Bill a customer"), icon: "receipt-text", run: () => frappe.new_doc("Sales Invoice") },
         { label: __("Purchase Bill"), hint: __("Record a supplier bill"), icon: "file-text", run: () => frappe.new_doc("Purchase Invoice") },
+        { label: __("Quick Voucher Entry"), hint: __("Contra, payment, receipt, journal"), icon: "keyboard", run: () => frappe.set_route("voucher-entry") },
         { label: __("Receive Payment"), hint: __("Money from a customer"), icon: "arrow-down-to-line",
           run: () => frappe.new_doc("Payment Entry", { payment_type: "Receive", party_type: "Customer" }) },
         { label: __("Make Payment"), hint: __("Pay a supplier"), icon: "arrow-up-from-line",
           run: () => frappe.new_doc("Payment Entry", { payment_type: "Pay", party_type: "Supplier" }) },
-        { label: __("Expense / Income"), hint: __("Quick voucher entry"), icon: "keyboard", run: () => frappe.set_route("voucher-entry") },
         { label: __("Office Expense"), hint: __("Record a paid office expense"), icon: "wallet", run: () => frappe.new_doc("Office Expense") },
         { label: __("Quotation"), hint: __("Send a price offer"), icon: "file-pen", run: () => frappe.new_doc("Quotation") },
         { label: __("New Item"), hint: __("Product or service"), icon: "package", run: () => frappe.new_doc("Item") },

@@ -30,6 +30,17 @@
    "show_arrow": 0
   },
   {
+   "type": "Link",
+   "label": "Voucher Entry",
+   "link_to": "voucher-entry",
+   "link_type": "Page",
+   "icon": "keyboard",
+   "child": 0,
+   "indent": 0,
+   "collapsible": 1,
+   "show_arrow": 0
+  },
+  {
    "type": "Section Break",
    "label": "Sales",
    "icon": "shopping-cart",

@@ -2,3 +2,4 @@
 
 [post_model_sync]
 reckon_accounts_saas.patches.move_accounts_dashboard_to_top
+reckon_accounts_saas.patches.add_voucher_entry_shortcut

@@ -207,3 +207,18 @@ class SidebarOrderTests(unittest.TestCase):
         self.assertEqual(labels[1], ("accounts-dashboard", 0))  # top level, not tucked under Reports
         self.assertEqual(sum(1 for item in data["items"] if item.get("link_to") == "accounts-dashboard"), 1)
         self.assertIn("move_accounts_dashboard_to_top", (APP / "patches.txt").read_text(encoding="utf-8"))
+
+
+class HomeAndMenuTests(unittest.TestCase):
+    def test_the_quick_voucher_entry_tile_follows_purchase_bill(self):
+        js = (APP / "accounts_saas/page/accounts_home/accounts_home.js").read_text(encoding="utf-8")
+        labels = [line.split('__("')[1].split('")')[0] for line in js.splitlines() if line.lstrip().startswith("{ label: __(")]
+        self.assertEqual(labels[:3], ["Sales Invoice", "Purchase Bill", "Quick Voucher Entry"])
+        self.assertNotIn("Expense / Income", js)
+        self.assertIn('frappe.set_route("voucher-entry")', js)
+
+    def test_a_voucher_entry_shortcut_sits_right_after_the_accounts_dashboard(self):
+        data = json.loads((APP / "workspace_sidebar" / "accounts_saas.json").read_text(encoding="utf-8"))
+        top = [(item.get("link_to"), item.get("child")) for item in data["items"][:3]]
+        self.assertEqual(top, [("accounts-home", 0), ("accounts-dashboard", 0), ("voucher-entry", 0)])
+        self.assertIn("add_voucher_entry_shortcut", (APP / "patches.txt").read_text(encoding="utf-8"))
