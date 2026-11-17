@@ -13,6 +13,16 @@ APP = REPO_ROOT / "reckon_accounts_saas"
 
 
 class HooksTests(unittest.TestCase):
+    def test_purchase_and_sales_forms_can_read_the_buying_and_selling_settings(self):
+        # Purchase and sales forms load these on open; without them a tenant saw "Buying Settings is not available".
+        with app_modules("hooks", "constants") as (_ctx, (hooks, c)):
+            for doctype in ("Buying Settings", "Selling Settings"):
+                with self.subTest(doctype=doctype):
+                    self.assertIn(doctype, c.ALLOWED_DOCTYPES)
+                    self.assertIn(doctype, c.LOOKUP_ONLY_DOCTYPES)  # reachable by the API, not as a Desk page
+                    self.assertIn(doctype, c.READ_ONLY_GLOBALS)  # tenants read them; only vendor staff change them
+                    self.assertIn(doctype, hooks.has_permission)
+
     def test_every_isolated_doctype_has_query_permission_and_save_hooks(self):
         with app_modules("hooks", "constants") as (_ctx, (hooks, c)):
             for doctype in c.COMPANY_DOCTYPES + c.OWNED_MASTERS + c.SHARED_OR_OWNED_MASTERS:
