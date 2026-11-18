@@ -22,6 +22,8 @@ app_icon_route = _c.HOME_ROUTE
 
 required_apps = ["frappe", "erpnext", "reckon_saas_platform", "reckon_accounts"]
 
+app_include_js = ["/assets/reckon_accounts_saas/js/brand.js"]
+
 add_to_apps_screen = [
     {
         "name": app_name,

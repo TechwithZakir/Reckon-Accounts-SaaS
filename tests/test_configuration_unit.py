@@ -55,7 +55,7 @@ class HooksTests(unittest.TestCase):
                 "app_logo_url", "app_icon_url", "app_icon_title", "app_icon_route", "required_apps",
                 "add_to_apps_screen", "after_install", "after_migrate", "reckon_saas_modules", "before_request",
                 "after_request", "get_website_user_home_page", "boot_session", "permission_query_conditions",
-                "has_permission", "doc_events", "doctype_js", "fixtures",
+                "has_permission", "doc_events", "doctype_js", "fixtures", "app_include_js",
             }
             public = {name for name in vars(hooks) if not name.startswith("_") and name != "annotations"}
             self.assertEqual(public - known, set())
