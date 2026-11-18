@@ -99,6 +99,7 @@ def ensure_workspace_sidebar() -> None:
         sidebar = frappe.get_doc("Workspace Sidebar", WORKSPACE_SIDEBAR)
         sidebar.set("items", definition["items"])
         sidebar.header_icon = definition["header_icon"]
+        sidebar.title = definition.get("title") or sidebar.title
         sidebar.save(ignore_permissions=True)
     else:
         frappe.get_doc(definition).insert(ignore_permissions=True, ignore_links=True)

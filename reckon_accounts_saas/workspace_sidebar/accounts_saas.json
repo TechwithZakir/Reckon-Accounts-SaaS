@@ -1,7 +1,7 @@
 {
  "doctype": "Workspace Sidebar",
  "name": "Accounts SaaS",
- "title": "Accounts SaaS",
+ "title": "ReckonBooks",
  "app": "reckon_accounts_saas",
  "module": "Accounts SaaS",
  "header_icon": "accounting",

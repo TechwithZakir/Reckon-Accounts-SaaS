@@ -17,9 +17,9 @@ def get_module_definition() -> dict:
     """Registration with Reckon SaaS Platform (``reckon_saas_modules`` hook)."""
     return {
         "key": MODULE_KEY,
-        "label": "Accounts",
-        "description": "Sales, purchase, stock and accounting for any small business: invoices, "
-        "bills, payments, inventory and Tally-style books in Bangla and English.",
+        "label": "ReckonBooks",
+        "description": "Complete Accounting, Sales, Purchase, Inventory & Stock management software for your business. Invoices, bills, payments, inventory and "
+        "Tally-style books in Bangla and English.",
         "workspace": f"app/{HOME_PAGE}",
         "home_route": HOME_ROUTE,
         "admin_role": ADMIN_ROLE,

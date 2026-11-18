@@ -1,4 +1,8 @@
-# Reckon Accounts SaaS
+# ReckonBooks
+
+**Complete Accounting, Sales, Purchase, Inventory & Stock management software for your business.**
+
+_(App name: Reckon Accounts SaaS; the module is sold as ReckonBooks.)_
 
 Single-company SaaS accounting for small businesses on Frappe/ERPNext v15 and v16:
 **sales, purchase, stock and accounting** with Tally-style books. App name:

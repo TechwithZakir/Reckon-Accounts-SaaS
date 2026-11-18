@@ -10,14 +10,14 @@ from reckon_accounts_saas import constants as _c
 from reckon_accounts_saas import form_config as _forms
 
 app_name = "reckon_accounts_saas"
-app_title = "Reckon Accounts SaaS"
+app_title = "ReckonBooks"
 app_publisher = "Reckon Technologies Ltd."
-app_description = "Single-company SaaS accounting, sales, purchase and stock on ERPNext"
+app_description = "Complete Accounting, Sales, Purchase, Inventory & Stock management software for your business"
 app_email = "hello@reckon.tech"
 app_license = "MIT"
 app_logo_url = "/assets/reckon_accounts_saas/images/reckon-accounts-saas-icon.svg"
 app_icon_url = app_logo_url
-app_icon_title = "Accounts"
+app_icon_title = "ReckonBooks"
 app_icon_route = _c.HOME_ROUTE
 
 required_apps = ["frappe", "erpnext", "reckon_saas_platform", "reckon_accounts"]
@@ -26,7 +26,7 @@ add_to_apps_screen = [
     {
         "name": app_name,
         "logo": app_logo_url,
-        "title": "Accounts",
+        "title": "ReckonBooks",
         "route": app_icon_route,
         "desk_route": app_icon_route,
         "has_permission": "reckon_accounts_saas.api.check_app_permission",

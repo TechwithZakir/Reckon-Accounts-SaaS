@@ -222,3 +222,11 @@ class HomeAndMenuTests(unittest.TestCase):
         top = [(item.get("link_to"), item.get("child")) for item in data["items"][:3]]
         self.assertEqual(top, [("accounts-home", 0), ("accounts-dashboard", 0), ("voucher-entry", 0)])
         self.assertIn("add_voucher_entry_shortcut", (APP / "patches.txt").read_text(encoding="utf-8"))
+
+
+class BrandTests(unittest.TestCase):
+    def test_the_module_is_sold_as_reckonbooks(self):
+        with app_modules("saas_module") as (_ctx, (module,)):
+            definition = module.get_module_definition()
+            self.assertEqual(definition["label"], "ReckonBooks")
+            self.assertIn("Inventory & Stock management software for your business", definition["description"])
