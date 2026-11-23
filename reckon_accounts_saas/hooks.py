@@ -5,9 +5,21 @@ Tally-style books. This app adds tenant isolation, the SaaS module
 registration, a small-business home page, team access and lean forms.
 """
 
+import hashlib
+from pathlib import Path
+
 # Private aliases: Frappe reads every public name in hooks.py as a hook.
 from reckon_accounts_saas import constants as _c
 from reckon_accounts_saas import form_config as _forms
+
+
+def _asset_version(*parts):
+    """A short fingerprint of an asset file. nginx caches /assets for a year, so the URL changes when the file does."""
+    try:
+        return hashlib.md5((Path(__file__).parent / "public" / Path(*parts)).read_bytes()).hexdigest()[:10]
+    except OSError:
+        return "0"
+
 
 app_name = "reckon_accounts_saas"
 app_title = "ReckonBooks"
@@ -22,7 +34,7 @@ app_icon_route = _c.HOME_ROUTE
 
 required_apps = ["frappe", "erpnext", "reckon_saas_platform", "reckon_accounts"]
 
-app_include_js = ["/assets/reckon_accounts_saas/js/brand.js"]
+app_include_js = [f"/assets/reckon_accounts_saas/js/brand.js?v={_asset_version('js', 'brand.js')}"]
 
 add_to_apps_screen = [
     {
