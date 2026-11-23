@@ -5,8 +5,8 @@ Tally-style books. This app adds tenant isolation, the SaaS module
 registration, a small-business home page, team access and lean forms.
 """
 
-import hashlib
-from pathlib import Path
+import hashlib as _hashlib
+from pathlib import Path as _Path
 
 # Private aliases: Frappe reads every public name in hooks.py as a hook.
 from reckon_accounts_saas import constants as _c
@@ -16,7 +16,7 @@ from reckon_accounts_saas import form_config as _forms
 def _asset_version(*parts):
     """A short fingerprint of an asset file. nginx caches /assets for a year, so the URL changes when the file does."""
     try:
-        return hashlib.md5((Path(__file__).parent / "public" / Path(*parts)).read_bytes()).hexdigest()[:10]
+        return _hashlib.md5((_Path(__file__).parent / "public" / _Path(*parts)).read_bytes()).hexdigest()[:10]
     except OSError:
         return "0"
 
