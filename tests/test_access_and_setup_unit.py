@@ -36,6 +36,15 @@ class RoleSyncTests(unittest.TestCase):
         self.assertIn("Sales User", added)
         self.assertNotIn("Stock User", added)  # already held and still wanted
 
+    def test_the_role_change_runs_as_administrator_and_the_callers_session_comes_back(self):
+        """A company admin adding a team member cannot save a User record: the sync must not run as them."""
+        with app_modules("access") as (ctx, (access,)):
+            ctx.frappe.session.user = "boss@acme.example"
+            seen = []
+            ctx.frappe.set_user.side_effect = lambda name: seen.append(name)
+            self._sync(ctx, access, [{"company": "Acme", "role_profile": "Accountant"}], [])
+        self.assertEqual(seen, ["Administrator", "boss@acme.example"])
+
     def test_company_permission_is_created(self):
         with app_modules("access") as (ctx, (access,)):
             self._sync(ctx, access, [{"company": "Acme", "role_profile": "Accountant"}], [])

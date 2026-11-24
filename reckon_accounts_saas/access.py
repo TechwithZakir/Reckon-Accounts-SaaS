@@ -39,9 +39,22 @@ def sync_tenant_user_access(doc, method=None) -> None:
 
 
 def sync_user(user: str | None) -> None:
-    """Make the user's roles and Company permission match their assignments."""
+    """Make the user's roles and Company permission match their assignments.
+
+    Runs as Administrator, whoever triggered it: a company admin adding or editing a team member has no right to
+    save a User record (the list holds every company's people), and the role change is ours to make, not theirs.
+    """
     if not user or user in {"Guest", "Administrator"} or not frappe.db.exists("User", user):
         return
+    caller = frappe.session.user
+    frappe.set_user("Administrator")
+    try:
+        _sync_user(user)
+    finally:
+        frappe.set_user(caller)
+
+
+def _sync_user(user: str) -> None:
     assignments = frappe.get_all(
         "Tenant User Assignment",
         filters={"user": user, "active": 1},

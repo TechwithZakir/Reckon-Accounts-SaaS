@@ -78,6 +78,7 @@ def build_frappe() -> ModuleType:
     frappe.whitelist = lambda *args, **kwargs: (lambda fn: fn)
     frappe.scrub = lambda text: text.replace(" ", "_").replace("-", "_").lower()
     frappe.session = _Dict(user="owner@acme.example")
+    frappe.set_user = Mock()
     frappe.flags = _Dict()
     frappe.local = _Dict(form_dict=_Dict(), request=None)
     frappe.cache = FakeCache()
