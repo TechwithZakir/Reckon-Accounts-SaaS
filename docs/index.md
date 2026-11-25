@@ -8,6 +8,8 @@ lang: en
 
 # ReckonBooks: accounting, sales, purchase and inventory for small businesses
 
+![Banner](banner.svg)
+
 ReckonBooks is complete accounting, sales, purchase, inventory and stock management for small businesses, delivered as a subscription through [ReckonERP](https://app.reckon.tech). Each business gets its own company, a home page designed for non-accountants and Tally-style books, so owners can run daily work without learning a full ERP.
 
 ## Detailed features
